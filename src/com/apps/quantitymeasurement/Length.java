@@ -6,10 +6,12 @@ public class Length {
     private final double value;
     private final LengthUnit unit;
 
-    // Step 1: Define the Enum with conversion factors relative to Inches
+    // Step 1: Define the Enum with all supported units for UC4
     public enum LengthUnit {
+        INCHES(1.0),
         FEET(12.0),
-        INCHES(1.0);
+        YARDS(36.0),           // 1 yard = 3 feet = 36 inches
+        CENTIMETERS(0.393701); // 1 cm = 0.393701 inches
 
         private final double conversionFactor;
 
@@ -22,26 +24,24 @@ public class Length {
         }
     }
 
-    // Step 2: Constructor
     public Length(double value, LengthUnit unit) {
         this.value = value;
         this.unit = unit;
     }
 
-    // Step 3: Helper method to convert everything to a base unit (Inches)
+    // Step 2: Centralized conversion logic
     private double convertToBaseUnit() {
         return value * unit.getConversionFactor();
     }
 
-    // Step 4: Refactored equals() method for Cross-Unit comparison
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Length that = (Length) o;
+        if (this == o) return true; // Reference check
+        if (o == null || getClass() != o.getClass()) return false; // Null and Type check
+        Length length = (Length) o;
 
-        // Compare the converted values to check if 1 ft == 12 inches
-        return Double.compare(this.convertToBaseUnit(), that.convertToBaseUnit()) == 0;
+        // Handle floating-point precision for UC4 (especially for CM)
+        return Math.abs(this.convertToBaseUnit() - length.convertToBaseUnit()) < 0.00001;
     }
 
     @Override
