@@ -6,47 +6,34 @@ import static org.junit.jupiter.api.Assertions.*;
 public class QuantityMeasurementAppTest {
 
     @Test
-    public void testEquality_YardToFeet_EquivalentValue() {
-        Length yard = new Length(1.0, Length.LengthUnit.YARDS);
-        Length feet = new Length(3.0, Length.LengthUnit.FEET);
-        assertEquals(yard, feet); // 1yd = 3ft
+    public void testConversion_FeetToInches() {
+        Length feet = new Length(1.0, Length.LengthUnit.FEET);
+        assertEquals(12.0, feet.convertTo(Length.LengthUnit.INCHES), 0.00001);
     }
 
     @Test
-    public void testEquality_YardToInches_EquivalentValue() {
+    public void testConversion_YardsToInches() {
         Length yard = new Length(1.0, Length.LengthUnit.YARDS);
-        Length inches = new Length(36.0, Length.LengthUnit.INCHES);
-        assertEquals(yard, inches); // 1yd = 36in
+        assertEquals(36.0, yard.convertTo(Length.LengthUnit.INCHES), 0.00001);
     }
 
     @Test
-    public void testEquality_CentimetersToInches_EquivalentValue() {
+    public void testConversion_InchesToYards() {
+        Length inches = new Length(72.0, Length.LengthUnit.INCHES);
+        assertEquals(2.0, inches.convertTo(Length.LengthUnit.YARDS), 0.00001);
+    }
+
+    @Test
+    public void testConversion_CentimetersToInches() {
         Length cm = new Length(1.0, Length.LengthUnit.CENTIMETERS);
-        Length inches = new Length(0.393701, Length.LengthUnit.INCHES);
-        assertEquals(cm, inches); // 1cm = 0.393701in
+        assertEquals(0.393701, cm.convertTo(Length.LengthUnit.INCHES), 0.00001);
     }
 
     @Test
-    public void testEquality_AllUnits_TransitiveProperty() {
-        Length yard = new Length(1.0, Length.LengthUnit.YARDS);
-        Length feet = new Length(3.0, Length.LengthUnit.FEET);
-        Length inches = new Length(36.0, Length.LengthUnit.INCHES);
-
-        assertEquals(yard, feet);
-        assertEquals(feet, inches);
-        assertEquals(yard, inches); // If A=B and B=C, then A=C
-    }
-
-    @Test
-    public void testEquality_DifferentValue_ReturnsFalse() {
-        Length yard = new Length(1.0, Length.LengthUnit.YARDS);
-        Length feet = new Length(2.0, Length.LengthUnit.FEET);
-        assertNotEquals(yard, feet);
-    }
-
-    @Test
-    public void testEquality_NullComparison() {
-        Length yard = new Length(1.0, Length.LengthUnit.YARDS);
-        assertNotEquals(null, yard); // Null safety
+    public void testConversion_RoundTrip() {
+        Length start = new Length(10.0, Length.LengthUnit.FEET);
+        double toYards = start.convertTo(Length.LengthUnit.YARDS);
+        Length middle = new Length(toYards, Length.LengthUnit.YARDS);
+        assertEquals(10.0, middle.convertTo(Length.LengthUnit.FEET), 0.00001);
     }
 }
