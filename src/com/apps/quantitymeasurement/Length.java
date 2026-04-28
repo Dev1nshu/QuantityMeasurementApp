@@ -35,6 +35,18 @@ public class Length {
         return (this.value * this.unit.getConversionFactor()) / targetUnit.getConversionFactor();
     }
 
+    // UC6: Addition logic
+    public Length add(Length that, LengthUnit targetUnit) {
+        Objects.requireNonNull(that, "Operand cannot be null");
+        Objects.requireNonNull(targetUnit, "Target unit cannot be null");
+
+        double sumInInches = (this.value * this.unit.getConversionFactor()) +
+                (that.value * that.unit.getConversionFactor());
+
+        double finalValue = sumInInches / targetUnit.getConversionFactor();
+        return new Length(finalValue, targetUnit);
+    }
+
     private double getBaseValue() {
         return value * unit.getConversionFactor();
     }
